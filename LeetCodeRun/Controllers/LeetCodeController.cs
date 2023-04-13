@@ -55,6 +55,7 @@ namespace LeetCodeRun.Controllers
             int len = nums.Length; int lookingFor = 0;
             int[] resultList = new int[2];
 
+
             for (int i = 0; i < len; i++)
             {
                 lookingFor = target - nums[i];
@@ -174,6 +175,41 @@ namespace LeetCodeRun.Controllers
             string outputPath = "/" + string.Join("/", outputComponents);
 
             return outputPath;
+        }
+        public class ValidateStackSequenceVM
+        {
+            public int[] pushed { get; set; }
+            public int[] popped { get; set; }
+        }
+        [HttpPost]
+        [Route("ValidateStackSequences")]
+        public bool ValidateStackSequences(ValidateStackSequenceVM model)
+        {
+            bool result = ValidateStackSequences(model.pushed, model.popped);
+            return result;
+        }
+        private bool ValidateStackSequences(int[] pushed, int[] popped)
+        {
+
+            Stack<int> stack = new Stack<int>();
+
+            for (int i = 0; i < pushed.Length; i++)
+            {
+                stack.Push(pushed[i]);
+
+                if (pushed[i] == popped[0])
+                {
+                    stack.Pop();
+                    popped = popped.Where(x => x != popped[0]).ToArray();
+
+                    while (stack.Count > 0 && stack.Peek() == popped[0])
+                    {
+                        stack.Pop();
+                        popped = popped.Where(x => x != popped[0]).ToArray();
+                    }
+                }
+            }
+            return stack.Count == 0 ? true : false;
         }
     }
 }
