@@ -71,11 +71,11 @@ namespace LeetCodeRun.Controllers
                         //index = i - 1 > 0 ? Array.IndexOf(nums, lookingFor, 0, i-1) :
                         //    (index < 0 || i == index) ? Array.IndexOf(nums, lookingFor,i < len ? i + 1 : i, i==len ? len - 1 : len) : -1;
 
-                        if(i - 1 > 0)
+                        if (i - 1 > 0)
                         {
                             index = Array.IndexOf(nums, lookingFor, 0, i - 1);
                         }
-                        else if(index < 0 || i == index)
+                        else if (index < 0 || i == index)
                         {
                             index = Array.IndexOf(nums, lookingFor, i < len ? i + 1 : i, len - 1);
                         }
@@ -87,7 +87,7 @@ namespace LeetCodeRun.Controllers
                         //index = index < 0 || i == index ? Array.IndexOf(nums, lookingFor, i + 1, len-1) : 0;
                     }
 
-                    if(index < 0)
+                    if (index < 0)
                     {
                         continue;
                     }
@@ -105,9 +105,39 @@ namespace LeetCodeRun.Controllers
                         break;
                     }
                 }
-               
+
             }
             return resultList;
+        }
+
+        [HttpPost]
+        [Route("SimplifyPath")]
+        public string SimplifyPath(string path)
+        {
+            char[] result = new char[path.Length];
+            int resultIndex = 1;
+
+            result[0] = path[0];
+
+            for (int i = 1; i < path.Length; i++)
+            {
+                if (result[resultIndex - 1] == '/' && (path[i] == '/' || path[i] == '.'))
+                {
+                    continue;
+                }
+                else
+                {
+                    result[resultIndex] = path[i];
+                    resultIndex++;
+                }
+            }
+            if (resultIndex > 1 && result[resultIndex - 1] == '/')
+            {
+                result[resultIndex - 1] = '\0';
+            }
+            char[] filteredCharArray = result.Where(c => c != '\0').ToArray();
+            string strResult = new string(filteredCharArray);
+            return strResult;
         }
     }
 }
