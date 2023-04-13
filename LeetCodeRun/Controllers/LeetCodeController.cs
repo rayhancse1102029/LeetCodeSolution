@@ -138,6 +138,42 @@ namespace LeetCodeRun.Controllers
             char[] filteredCharArray = result.Where(c => c != '\0').ToArray();
             string strResult = new string(filteredCharArray);
             return strResult;
+        }   
+        
+        [HttpPost]
+        [Route("SimplifyPathSolution_02")]
+        public string SimplifyPath2(string path)
+        {
+            string[] components = path.Split('/');
+            Stack<string> stack = new Stack<string>();
+
+            foreach (string component in components)
+            {
+                if (component == "" || component == ".")
+                {
+                    // ignore empty components and current directory components
+                    continue;
+                }
+                else if (component == "..")
+                {
+                    // remove the last component from the stack if it exists
+                    if (stack.Count > 0)
+                    {
+                        stack.Pop();
+                    }
+                }
+                else
+                {
+                    // add the component to the stack
+                    stack.Push(component);
+                }
+            }
+
+            // join the stack components with slashes to form the output path
+            string[] outputComponents = stack.Reverse().ToArray();
+            string outputPath = "/" + string.Join("/", outputComponents);
+
+            return outputPath;
         }
     }
 }
