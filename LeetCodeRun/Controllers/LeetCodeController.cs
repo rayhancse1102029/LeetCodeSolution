@@ -57,62 +57,27 @@ namespace LeetCodeRun.Controllers
             int len = nums.Length; int lookingFor = 0;
             int[] resultList = new int[2];
 
-
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len - 1; i++)
             {
                 lookingFor = target - nums[i];
 
-                int index = Array.IndexOf(nums, lookingFor);
+                int index = Array.IndexOf(nums, lookingFor, i + 1);
+
                 if (index < 0)
                 {
                     continue;
                 }
                 else
                 {
-                    if (i == index)
-                    {
-                        //index = i - 1 > 0 ? Array.IndexOf(nums, lookingFor, 0, i-1) :
-                        //    (index < 0 || i == index) ? Array.IndexOf(nums, lookingFor,i < len ? i + 1 : i, i==len ? len - 1 : len) : -1;
-
-                        if (i - 1 > 0)
-                        {
-                            index = Array.IndexOf(nums, lookingFor, 0, i - 1);
-                        }
-                        else if (index < 0 || i == index)
-                        {
-                            index = Array.IndexOf(nums, lookingFor, i < len ? i + 1 : i, len - 1);
-                        }
-                        else
-                        {
-                            index = -1;
-                        }
-
-                        //index = index < 0 || i == index ? Array.IndexOf(nums, lookingFor, i + 1, len-1) : 0;
-                    }
-
-                    if (index < 0)
-                    {
-                        continue;
-                    }
-
-                    if (i < index)
-                    {
-                        resultList[0] = i;
-                        resultList[1] = index;
-                        break;
-                    }
-                    else
-                    {
-                        resultList[0] = index;
-                        resultList[1] = i;
-                        break;
-                    }
+                    resultList[0] = i;
+                    resultList[1] = index;
+                    break;
                 }
 
             }
             return resultList;
         }
-
+         
         [HttpPost]
         [Route("SimplifyPath")]
         public string SimplifyPath(string path)
