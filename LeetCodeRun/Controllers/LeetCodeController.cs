@@ -214,5 +214,76 @@ namespace LeetCodeRun.Controllers
             return dp[0, n - 1];
         }
 
+        [HttpPost]
+        [Route("MaxValueOfCoins")]
+        [SwaggerOperation(Tags = new[] { "piles = [[1,100,3],[7,8,9]] >>>>>> k = 2 >>>>>>>>>> output: 101" })]
+        public int MaxValueOfCoins(IList<IList<int>> piles, int k)
+        {
+            if (k <= 0)
+                return 0;
+            int[,] memo = new int[k + 1, piles.Count];
+
+            for (int i = 0; i <= k; ++i)
+                for (int j = 0; j < piles.Count; ++j)
+                    memo[i, j] = -1;
+
+            return MaxValueOfCoins(piles, 0, k, memo);
+        }
+        private int MaxValueOfCoins(IList<IList<int>> piles, int curIdx, int k, int[,] memo)
+        {
+            if (k <= 0 || curIdx >= piles.Count)
+                return 0;
+            if (memo[k, curIdx] != -1)
+                return memo[k, curIdx];
+
+            int coinCount = piles[curIdx].Count;
+            int maxPickCount = Math.Min(k, coinCount);
+
+            // option #1 Dont pick coin from this pile
+            int result = MaxValueOfCoins(piles, curIdx + 1, k, memo);
+
+            // option #2 Pick from this pile
+            int pickSum = 0;
+            for (int i = 0; i < maxPickCount; ++i)
+            {
+                int coinValue = piles[curIdx][i];
+                pickSum += coinValue;
+                int temp = MaxValueOfCoins(piles, curIdx + 1, k - i - 1, memo);
+                result = Math.Max(result, pickSum + temp);
+
+                memo[k, curIdx] = result;
+            }
+
+            return result;
+        }
+
+
+        [HttpPost]
+        [Route("Reverse")]
+        [SwaggerOperation(Tags = new[] { "x = 123 >>>>>> k = 2 >>>>>>>>>> output: 321" })]
+        public int Reverse(int x)
+        {
+            string reverseValue = String.Empty;
+            bool isNegativeValue = false;
+
+            if (x > int.MaxValue)
+                return 0;
+
+            if(x < 0) 
+                isNegativeValue = true;
+
+            string xString = x.ToString();
+            int len = !isNegativeValue ? xString.Length - 1 : xString.Length - 2;
+
+            for (int i = xString.Length - 1; i >= (isNegativeValue ? 1 : 0); i--)
+            {
+                reverseValue += xString[i];
+            }
+
+            if ((isNegativeValue ? -1 : 1) * Convert.ToInt64(reverseValue) > int.MaxValue)
+                return 0;
+
+            return (isNegativeValue ? -1 : 1) * Convert.ToInt32(reverseValue);
+        }
     }
 }
