@@ -280,10 +280,12 @@ namespace LeetCodeRun.Controllers
                 reverseValue += xString[i];
             }
 
-            if ((isNegativeValue ? -1 : 1) * Convert.ToInt64(reverseValue) > int.MaxValue)
+            if (Convert.ToInt64(reverseValue) > int.MaxValue)
                 return 0;
 
             return (isNegativeValue ? -1 : 1) * Convert.ToInt32(reverseValue);
         }
+
+
     }
 }
