@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.Swagger.Annotations;
+using System;
 using System.ComponentModel;
 
 namespace LeetCodeRun.Controllers
@@ -61,7 +62,7 @@ namespace LeetCodeRun.Controllers
             {
                 lookingFor = target - nums[i];
 
-                int index = Array.IndexOf(nums, lookingFor, i + 1);
+                int index = Array.IndexOf(nums, lookingFor, i + 1);                
 
                 if (index < 0)
                 {
@@ -286,6 +287,113 @@ namespace LeetCodeRun.Controllers
             return (isNegativeValue ? -1 : 1) * Convert.ToInt32(reverseValue);
         }
 
+        [HttpPost]
+        [Route("MyAtoi")]
+        [SwaggerOperation(Tags = new[] { "x = 123 >>>>>> k = 2 >>>>>>>>>> output: 321" })]
+        public int MyAtoi(string s)
+        {
+            char[] charArray = s.ToCharArray();
+            bool isNegative = false;    
+            string result = String.Empty;
 
+            foreach (char c in charArray)
+            {
+                if(c == '-' || c == '+' || c == ' ' || Char.IsNumber(c)) 
+                {
+                    if (c == '-')
+                        isNegative = true;
+                    else if (Char.IsNumber(c))
+                        result += c;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(result))
+                return 0;
+            else if ((isNegative ? -1 : 1) * Convert.ToInt64(result) < int.MinValue)
+                return int.MinValue;
+            else if ((isNegative ? -1 : 1) * Convert.ToInt64(result) > int.MaxValue)
+                return int.MaxValue;
+            else
+                return (isNegative ? -1 : 1) * Convert.ToInt32(result);
+        }
+
+        [HttpPost]
+        [Route("MinimizeArrayValue")]
+        [SwaggerOperation(Tags = new[] { "x = [3,7,1,6] >>>>>> output: 5" })]
+        public int MinimizeArrayValue(int[] nums)
+        {
+            int len = nums.Length; int index = 1;
+            decimal sumValue = nums[0]; int result = nums[0];
+
+            do
+            {
+                sumValue += nums[index];
+                result = Math.Max(result, (int)Math.Ceiling(sumValue / ++index));
+
+            } while (len > index);
+
+            return result;
+        }    
+        
+
+       [HttpPost]
+       [Route("LongestZigZag")]
+       [SwaggerOperation(Tags = new[] { "" })]
+       public int LongestZigZag(TreeNode root)
+       {
+
+           return 0;
+       }
+       public class TreeNode
+       {
+              public int val;
+              public TreeNode left;
+              public TreeNode right;
+              public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+              {
+                  this.val = val;
+                  this.left = left;
+                  this.right = right;
+              }
+       }
+        [HttpGet]
+        [Route("LengthOfLongestSubstring")]
+        [SwaggerOperation(Tags = new[] { "" })]
+        public int LengthOfLongestSubstring(string s)
+        {
+
+            int index = 0;
+            string value = String.Empty;
+            List<int> lengthList = new List<int>();
+
+            if (String.IsNullOrEmpty(s) || s == null)
+            {
+                return 0;
+            }
+
+            while (index < s.Length)
+            {
+                for (int i = index; i < s.Length; i++)
+                {
+                    if (value.Contains(s[i]))
+                    {
+                        lengthList.Add(value.Length);
+                        value = String.Empty;
+                        index++;
+                        break;
+                    }
+                    else
+                    {
+                        value += s[i];
+                    }
+                }
+            }
+
+            return lengthList.Max();
+        }
     }
 }
